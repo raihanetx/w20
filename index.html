@@ -1807,27 +1807,8 @@ src="https://www.facebook.com/tr?id=482675157669768&ev=PageView&noscript=1"
             <div class="container">
                  <h2 class="category-section-title">Product Categories</h2>
             </div>
-            <section class="categories container">
-                <div class="category" onclick="navigateTo('products', 'course')">
-                    <div class="category-icon-wrapper"><i class="fas fa-graduation-cap category-icon-fa" aria-hidden="true"></i></div>
-                    <span class="category-name">Courses</span>
-                </div>
-                <div class="category" onclick="navigateTo('products', 'subscription')">
-                    <div class="category-icon-wrapper"><i class="fas fa-key category-icon-fa" aria-hidden="true"></i></div>
-                    <span class="category-name">Subscription</span>
-                </div>
-                <div class="category" onclick="navigateTo('products', 'software')">
-                    <div class="category-icon-wrapper"><i class="fas fa-laptop-code category-icon-fa" aria-hidden="true"></i></div>
-                    <span class="category-name">Software</span>
-                </div>
-                <div class="category" onclick="navigateTo('products', 'ebook')">
-                    <div class="category-icon-wrapper"><i class="fas fa-book-open category-icon-fa" aria-hidden="true"></i></div>
-                    <span class="category-name">Ebook</span>
-                </div>
-                <div class="category" onclick="navigateTo('products', 'resource')">
-                    <div class="category-icon-wrapper"><i class="fas fa-tools category-icon-fa" aria-hidden="true"></i></div>
-                    <span class="category-name">Resources</span>
-                </div>
+            <section class="categories container" id="categoriesContainer">
+                <!-- Categories will be dynamically injected here -->
             </section>
 
             <section class="product-listings container">
@@ -3859,12 +3840,41 @@ function toggleSeeMore(btn, seeLess) {
             bottomNavItems.forEach(item => { item.classList.remove('active'); if (item.dataset.page === activePage || (activePage === 'productDetail' && item.dataset.page === 'products') || (activePage === 'cart' && item.dataset.page === 'products') ) { item.classList.add('active'); } });
         }
 
+        async function fetchAndRenderCategories() {
+            const container = document.getElementById('categoriesContainer');
+            if (!container) return;
+
+            try {
+                const response = await fetch('api/categories.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const categories = await response.json();
+
+                container.innerHTML = ''; // Clear existing
+                categories.forEach(cat => {
+                    const categoryElement = document.createElement('div');
+                    categoryElement.className = 'category';
+                    categoryElement.onclick = () => navigateTo('products', cat.id);
+                    categoryElement.innerHTML = `
+                        <div class="category-icon-wrapper"><i class="${cat.icon} category-icon-fa" aria-hidden="true"></i></div>
+                        <span class="category-name">${cat.name}</span>
+                    `;
+                    container.appendChild(categoryElement);
+                });
+            } catch (error) {
+                console.error('Failed to load categories:', error);
+                container.innerHTML = '<p>Could not load product categories at this time.</p>';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('DOM fully loaded and parsed');
             setupEventListeners(); 
             loadCartFromLocalStorage(); 
             loadOrdersFromLocalStorage(); 
             await fetchProducts(true);
+            await fetchAndRenderCategories();
             handleHashChange(true); 
             updateOrdersNotification();
             window.addEventListener('hashchange', () => handleHashChange(false)); 
