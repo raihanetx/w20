@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-$categories_file = 'categories.json';
+$categories_file = __DIR__ . '/categories.json';
 
 if (file_exists($categories_file)) {
     $file_content = file_get_contents($categories_file);

@@ -17,7 +17,7 @@ if (json_last_error() !== JSON_ERROR_NONE || empty($update_data['id']) || empty(
 }
 
 $category_id = $update_data['id'];
-$categories_file = 'categories.json';
+$categories_file = __DIR__ . '/categories.json';
 
 if (!file_exists($categories_file)) {
     http_response_code(404);

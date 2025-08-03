@@ -17,7 +17,7 @@ if (json_last_error() !== JSON_ERROR_NONE || empty($request_data['id'])) {
 }
 
 $category_id_to_delete = $request_data['id'];
-$categories_file = 'categories.json';
+$categories_file = __DIR__ . '/categories.json';
 
 if (!file_exists($categories_file)) {
     http_response_code(404);

@@ -16,7 +16,7 @@ if (json_last_error() !== JSON_ERROR_NONE || empty($new_category_data['name']) |
     exit;
 }
 
-$categories_file = 'categories.json';
+$categories_file = __DIR__ . '/categories.json';
 $categories = [];
 
 if (file_exists($categories_file)) {
