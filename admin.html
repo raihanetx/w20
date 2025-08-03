@@ -406,26 +406,22 @@
 
             if (productId) {
                 title.textContent = 'Edit Product';
-                // Fetch full product data to populate the form
-                // This is a simplified approach; in a real app, you might fetch a single product
-                fetch('api/get_products.php').then(res => res.json()).then(products => {
-                    const product = products.find(p => p.id == productId);
-                    if (product) {
-                        document.getElementById('product-id').value = product.id;
-                        document.getElementById('product-name').value = product.name;
-                        document.getElementById('product-description').value = product.description;
-                        document.getElementById('product-long-description').value = product.longDescription;
-                        document.getElementById('product-category').value = product.category;
-                        document.getElementById('product-price').value = product.price;
-                        document.getElementById('product-stock').value = product.stock;
-                        document.getElementById('product-is-featured').checked = product.isFeatured;
-                        document.getElementById('product-image-path').value = product.image;
-                        document.getElementById('current-image').src = product.image ? `../${product.image}` : '';
-                        if (product.durations) {
-                            product.durations.forEach(d => addDuration(d.label, d.price));
-                        }
+                const product = allProductsData.find(p => p.id == productId);
+                if (product) {
+                    document.getElementById('product-id').value = product.id;
+                    document.getElementById('product-name').value = product.name;
+                    document.getElementById('product-description').value = product.description;
+                    document.getElementById('product-long-description').value = product.longDescription;
+                    document.getElementById('product-category').value = product.category;
+                    document.getElementById('product-price').value = product.price;
+                    document.getElementById('product-stock').value = product.stock;
+                    document.getElementById('product-is-featured').checked = product.isFeatured;
+                    document.getElementById('product-image-path').value = product.image;
+                    document.getElementById('current-image').src = product.image ? `../${product.image}` : '';
+                    if (product.durations) {
+                        product.durations.forEach(d => addDuration(d.label, d.price));
                     }
-                });
+                }
             } else {
                 title.textContent = 'Add Product';
                 document.getElementById('product-id').value = '';
@@ -437,7 +433,13 @@
             fetch('api/get_categories.php').then(res => res.json()).then(categories => {
                 categorySelect.innerHTML = '<option value="">Select Category</option>';
                 categories.forEach(cat => {
-                    categorySelect.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                    const option = document.createElement('option');
+                    option.value = cat.id;
+                    option.textContent = cat.name;
+                    if (productId && allProductsData.find(p => p.id == productId)?.category === cat.id) {
+                        option.selected = true;
+                    }
+                    categorySelect.appendChild(option);
                 });
             });
 
