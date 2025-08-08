@@ -359,7 +359,7 @@
             loader.style.display = 'block';
 
             try {
-                const response = await fetch('api/get_products.php');
+                const response = await fetch('api/get_products.php?t=' + new Date().getTime());
                 const products = await response.json();
                 allProductsData = products; // Store products globally
                 renderProducts(products);
@@ -430,7 +430,7 @@
 
             // Populate category dropdown
             const categorySelect = document.getElementById('product-category');
-            fetch('api/get_categories.php').then(res => res.json()).then(categories => {
+            fetch('api/get_categories.php?t=' + new Date().getTime()).then(res => res.json()).then(categories => {
                 categorySelect.innerHTML = '<option value="">Select Category</option>';
                 categories.forEach(cat => {
                     const option = document.createElement('option');
@@ -553,7 +553,7 @@
             loader.style.display = 'block';
 
             try {
-                const response = await fetch('api/get_categories.php');
+                const response = await fetch('api/get_categories.php?t=' + new Date().getTime());
                 const categories = await response.json();
                 renderCategories(categories);
             } catch (error) {
